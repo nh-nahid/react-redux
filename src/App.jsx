@@ -1,36 +1,19 @@
-import { useState } from 'react';
 import './App.css'
 import Counter from './components/Counter';
 import Stats from './components/Stats';
-import initialCounters from './data/inititalCounters';
+import { useDispatch, useSelector } from 'react-redux';
+import { decrement, increment } from './features/counters/counterSlice';
+import Post from './components/Post';
 
 function App() {
-  const [counters, setCounters] = useState(initialCounters);
-
+  const counters = useSelector((state) => state.counters);
+  const dispatch = useDispatch()
   const handleIncrement = (CounterId) => {
-      const updatedCounters = counters.map(c => {
-        if(c.id === CounterId){
-          return {
-            ...c,
-            value: c.value + 1,
-          }
-        }
-        return c;
-      })
-      setCounters(updatedCounters)
+     dispatch(increment(CounterId))
   }
 
   const handleDecrement = (CounterId) => {
-      const updatedCounters = counters.map(c => {
-        if(c.id === CounterId){
-          return {
-            ...c,
-            value: c.value - 1,
-          }
-        }
-        return c;
-      })
-      setCounters(updatedCounters)
+     dispatch(decrement(CounterId))
   }
 
   const totalCount = counters.reduce((sum, curr) => sum + curr.value, 0)
@@ -39,6 +22,7 @@ function App() {
        <h1>Simple Counter</h1>
        {counters.map(counter => <Counter key={counter.id} counter={counter.value} onIncrement={() => handleIncrement(counter.id)} onDecrement={() => handleDecrement(counter.id)} />)}
        <Stats TotalCount={totalCount} />
+       <Post />
     </>
   )
 }
